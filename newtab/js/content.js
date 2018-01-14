@@ -74,13 +74,13 @@ const updateClock = () => {
     let amOrPm = "AM";
 
     // we want 12 hour time
-    if (hour > 12) {
+    if (hour >= 12) {
         hour -= 12;
         amOrPm = "PM";
     }
 
     // again, 12 hour time
-    if (hour == 0) {
+    if (hour === 0) {
         hour = 12;
     }
 
