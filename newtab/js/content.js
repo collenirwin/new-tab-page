@@ -1,3 +1,4 @@
+// returns text with ;<>/"'|* and space replaced with the corresponding html characters
 const escape = (text) => {
     const escapeList = [
         [";", "&semi;"],
@@ -19,8 +20,8 @@ const escape = (text) => {
     return text;
 };
 
+// either expand or collapse the folder based on its current state
 const toggle = (folder) => {
-    // either expand or collapse the folder based on its current state
     folder.className = folder.className == "folder collapsed"
         ? "folder expanded"
         : "folder collapsed";
@@ -39,6 +40,7 @@ const addSite = (site, list) => {
     list.appendChild(li);
 };
 
+// walks the given bookmarks tree and adds all bookmarks to the given list (ul)
 const generateBookmarkBar = (bookmarks, list) => {
     for (let bookmark of bookmarks) {
         if (bookmark.url) { // regular bookmark
@@ -63,14 +65,12 @@ const generateBookmarkBar = (bookmarks, list) => {
     }
 };
 
-// updates the clock div with the current time
-const updateClock = () => {
+// updates the clock div with the passed datetime's time
+const updateClock = (date) => {
     const clock = document.getElementById("clock");
 
-    // get the current time
-    const now = new Date();
-    let hour = now.getHours();
-    let minute = now.getMinutes();
+    let hour = date.getHours();
+    let minute = date.getMinutes();
     let amOrPm = "AM";
 
     // we want 12 hour time
@@ -89,10 +89,30 @@ const updateClock = () => {
         minute = "0" + minute.toString();
     }
 
-    // update clock
+    // update clock div, ex: 10:30 AM
     clock.innerText = `${hour}:${minute} ${amOrPm}`;
-}
+};
 
+// updates the date div with the passed datetime's date
+const updateDate = (date) => {
+    const dateDiv = document.getElementById("date");
+
+    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const months = ["January", "February", "March", "April", "May", "June", "July", 
+        "August", "September", "October", "November", "December"];
+
+    // update date div, ex: Sunday, January 1
+    dateDiv.innerText = `${days[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}`;
+};
+
+// calls updateClock and updateDate with the current time
+const updateDateAndTime = () => {
+    const date = new Date();
+    updateClock(date);
+    updateDate(date);
+};
+
+// on load
 document.addEventListener("DOMContentLoaded", () => {
     // populate our bookmark bar
     const bookmarksUL = document.getElementById("bookmarks");
@@ -119,20 +139,30 @@ document.addEventListener("DOMContentLoaded", () => {
             const reader = backgrounds.createReader();
 
             reader.readEntries((images) => {
-                // set background to a random image
-                document.getElementsByTagName("body")[0].background =
-                    "/img/backgrounds/" + images[Math.floor(Math.random() * images.length)].name;
+                const background = document.getElementById("background")
+
+                const image = new Image();
+
+                // callback to fade the image in when it loads
+                image.onload = () => {
+                    background.style.backgroundImage = `url("${image.src}")`;
+                    background.style.opacity = 1.0;
+                };
+
+                // get a random image from the folder
+                image.src = `/img/backgrounds/${images[Math.floor(Math.random() * images.length)].name}`;
             });
         });
     });
 
-    // force the clock to update immediately
-    updateClock();
+    // force the clock and date to update immediately
+    updateDateAndTime();
 
-    // start the clock timer
-    setInterval(updateClock, 1000);
+    // start updating clock and date every second
+    setInterval(updateDateAndTime, 1000);
 });
 
+// folder-header click event (to toggle the folder)
 document.addEventListener("click", (e) => {
     if (e.target && e.target.className == "folder-header") {
         toggle(e.target.parentElement);
