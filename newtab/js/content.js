@@ -98,7 +98,7 @@ const updateDate = (date) => {
     const dateDiv = document.getElementById("date");
 
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    const months = ["January", "February", "March", "April", "May", "June", "July", 
+    const months = ["January", "February", "March", "April", "May", "June", "July",
         "August", "September", "October", "November", "December"];
 
     // update date div, ex: Sunday, January 1
@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const reader = backgrounds.createReader();
 
             reader.readEntries((images) => {
-                const background = document.getElementById("background")
+                const background = document.getElementById("background");
 
                 const image = new Image();
 
@@ -164,7 +164,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // folder-header click event (to toggle the folder)
 document.addEventListener("click", (e) => {
-    if (e.target && e.target.className == "folder-header") {
+    if (e.target && e.target.className === "folder-header") {
         toggle(e.target.parentElement);
     }
 });
