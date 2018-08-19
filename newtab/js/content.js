@@ -27,7 +27,7 @@ const toggle = (folder) => {
         : "folder collapsed";
 };
 
-// add a site link to a UL with its favicon
+// add a site link to a ul with its favicon
 const addSite = (site, list) => {
     const li = document.createElement("li");
     const url = encodeURI(site.url);
@@ -40,28 +40,61 @@ const addSite = (site, list) => {
     list.appendChild(li);
 };
 
+// add a folder ul to the provided ul return the folder ul
+const addFolder = (folder, list) => {
+    const li = document.createElement("li");
+
+    li.className = "folder collapsed";
+    li.innerHTML = `<span class="folder-header"><img class="icon" src="${"/img/folder.png"}">${escape(folder.title)}</span>`;
+
+    // make a new ul that will be added to this li
+    const folderUL = document.createElement("ul");
+    folderUL.className = "folder-content";
+
+    list.appendChild(li);
+    li.appendChild(folderUL);
+    
+    return folderUL;
+};
+
 // walks the given bookmarks tree and adds all bookmarks to the given list (ul)
-const generateBookmarkBar = (bookmarks, list) => {
+const generateBookmarkBar = (bookmarks, list, foldersFirst) => {
+    const folders = [];
+    const sites = [];
+    
+    // filter the bookmarks into sites and folders
     for (let bookmark of bookmarks) {
         if (bookmark.url) { // regular bookmark
-            addSite(bookmark, list);
+            sites.push(bookmark);
         }
         else { // bookmark folder
-            const li = document.createElement("li");
-
-            li.className = "folder collapsed";
-            li.innerHTML = `<span class="folder-header"><img class="icon" src="${"/img/folder.png"}">${escape(bookmark.title)}</span>`;
-
-            // make a new ul that will be added to this li
-            const folderUL = document.createElement("ul");
-            folderUL.className = "folder-content";
-
-            list.appendChild(li);
-            li.appendChild(folderUL);
-
-            // recursively call generateBookmarkBar, but with the children bookmarks of this folder
-            generateBookmarkBar(bookmark.children, folderUL);
+            folders.push(bookmark);
         }
+    }
+    
+    // function to add all folders and subfolders to the list
+    const appendFolders = () => {
+        for (let folder of folders) {
+            // recursively call generateBookmarkBar, but with the children bookmarks of this folder
+            // keeping the folders at the top of the list
+            generateBookmarkBar(folder.children, addFolder(folder, list), true);
+        }
+    };
+    
+    // function to add all sites to the list
+    const appendSites = () => {
+        for (let site of sites) {
+            addSite(site, list);
+        }
+    };
+    
+    if (foldersFirst) {
+        appendFolders();
+        appendSites();
+    }
+    else {
+        appendSites();
+        appendFolders();
     }
 };
 
@@ -105,7 +138,7 @@ const updateDate = (date) => {
     dateDiv.innerText = `${days[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}`;
 };
 
-// calls updateClock and updateDate with the current time
+// calls updateClock and updateDate with the current time and date
 const updateDateAndTime = () => {
     const date = new Date();
     updateClock(date);
