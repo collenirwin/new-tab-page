@@ -152,9 +152,6 @@ document.addEventListener("DOMContentLoaded", () => {
     chrome.bookmarks.getTree((b) => {
         // we want to skip the parent element (it's just an item called "Bookmarks bar")
         generateBookmarkBar(b[0].children[0].children, bookmarksUL);
-
-        // remove the last child as it's a link to the bookmark manager that chrome will block
-        bookmarksUL.removeChild(bookmarksUL.lastChild);
     });
 
     // populate our top sites bar
