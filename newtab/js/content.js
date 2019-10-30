@@ -138,7 +138,6 @@ const vm = new Vue({
         chrome.bookmarks.getTree(bookmark => {
             // we want to skip the parent element (it's just an item called "Bookmarks bar")
             this.rootNode = bookmark[0].children[0].children
-                .slice(-1) // remove the last child as it's a link to the bookmark manager that chrome will block
                 .map(child => new Node(child)); // wrap each bookmark in a Node
         });
         
