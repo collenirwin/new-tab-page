@@ -1,3 +1,9 @@
+import Node from './node.js';
+
+const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const months = ["January", "February", "March", "April", "May", "June", "July",
+    "August", "September", "October", "November", "December"];
+
 // returns text with ;<>/"'|* and space replaced with the corresponding html characters
 const escape = (text) => {
     const escapeList = [
@@ -18,13 +24,6 @@ const escape = (text) => {
     }
 
     return text;
-};
-
-// either expand or collapse the folder based on its current state
-const toggle = (folder) => {
-    folder.className = folder.className == "folder collapsed"
-        ? "folder expanded"
-        : "folder collapsed";
 };
 
 // add a site link to a UL with its favicon
@@ -65,73 +64,118 @@ const generateBookmarkBar = (bookmarks, list) => {
     }
 };
 
-// updates the clock div with the passed datetime's time
-const updateClock = (date) => {
-    const clock = document.getElementById("clock");
-
-    let hour = date.getHours();
-    let minute = date.getMinutes();
-    let amOrPm = "AM";
-
-    // we want 12 hour time
-    if (hour >= 12) {
-        hour -= 12;
-        amOrPm = "PM";
+Vue.component('icon-text', {
+    template: '#icon-text-template',
+    props: {
+        iconUrl: String,
+        text: String
     }
+});
 
-    // again, 12 hour time
-    if (hour === 0) {
-        hour = 12;
+Vue.component('tree-node', {
+    template: '#tree-node-template',
+    props: {
+        node: Node
     }
+});
 
-    // make sure we always show two digits for minute
-    if (minute < 10) {
-        minute = "0" + minute.toString();
+const vm = new Vue({
+    el: '#main',
+    data: {
+        rootNode: null,
+        topSites: null,
+        timeString: '',
+        dateString: ''
+    },
+    methods: {
+        /**
+         * Calls updateDate and updateTime with the current date
+         */
+        updateDateAndTime() {
+            const date = new Date();
+            updateClock(date);
+            updateDate(date);
+        },
+        
+        /**
+         * Updates dateString to the passed date in long format
+         * @param {Date} date 
+         */
+        updateDate(date) {
+            this.dateString = `${days[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}`;
+        },
+        
+        /**
+         * Updates timeString to the passed date's time portion
+         * @param {Date} date 
+         */
+        updateTime(date) {
+            let hour = date.getHours();
+            let minute = date.getMinutes();
+            let amOrPm = "AM";
+
+            // we want 12 hour time
+            if (hour >= 12) {
+                hour -= 12;
+                amOrPm = "PM";
+            }
+
+            // again, 12 hour time
+            if (hour === 0) {
+                hour = 12;
+            }
+
+            // make sure we always show two digits for minute
+            if (minute < 10) {
+                minute = "0" + minute.toString();
+            }
+            
+            this.timeString = `${hour}:${minute} ${amOrPm}`;
+        }
+    },
+    mounted() {
+        // grab all chrome bookmarks
+        chrome.bookmarks.getTree(bookmark => {
+            // we want to skip the parent element (it's just an item called "Bookmarks bar")
+            this.rootNode = bookmark[0].children[0].children
+                .slice(-1) // remove the last child as it's a link to the bookmark manager that chrome will block
+                .map(child => new Node(child)); // wrap each bookmark in a Node
+        });
+        
+        // grab all chrome top sites
+        chrome.topSites.get(sites => {
+            // wrap each site in a Node
+            this.topSites = sites.map(site => new Node(site));
+        });
+        
+        // force the clock and date to update immediately
+        updateDateAndTime();
+
+        // start updating clock and date every second
+        setInterval(updateDateAndTime, 1000);
     }
-
-    // update clock div, ex: 10:30 AM
-    clock.innerText = `${hour}:${minute} ${amOrPm}`;
-};
-
-// updates the date div with the passed datetime's date
-const updateDate = (date) => {
-    const dateDiv = document.getElementById("date");
-
-    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    const months = ["January", "February", "March", "April", "May", "June", "July", 
-        "August", "September", "October", "November", "December"];
-
-    // update date div, ex: Sunday, January 1
-    dateDiv.innerText = `${days[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}`;
-};
-
-// calls updateClock and updateDate with the current time
-const updateDateAndTime = () => {
-    const date = new Date();
-    updateClock(date);
-    updateDate(date);
-};
+});
 
 // on load
 document.addEventListener("DOMContentLoaded", () => {
     // populate our bookmark bar
-    const bookmarksUL = document.getElementById("bookmarks");
-    chrome.bookmarks.getTree((b) => {
-        // we want to skip the parent element (it's just an item called "Bookmarks bar")
-        generateBookmarkBar(b[0].children[0].children, bookmarksUL);
+    // const bookmarksUL = document.getElementById("bookmarks");
+    // chrome.bookmarks.getTree((b) => {
+    //     // we want to skip the parent element (it's just an item called "Bookmarks bar")
+    //     generateBookmarkBar(b[0].children[0].children, bookmarksUL);
 
-        // remove the last child as it's a link to the bookmark manager that chrome will block
-        bookmarksUL.removeChild(bookmarksUL.lastChild);
-    });
+    //     // remove the last child as it's a link to the bookmark manager that chrome will block
+    //     bookmarksUL.removeChild(bookmarksUL.lastChild);
+    // });
 
     // populate our top sites bar
-    const topSitesUL = document.getElementById("top-sites");
-    chrome.topSites.get((sites) => {
-        // grab all top sites, throw them in the top-sites UL
-        for (let site of sites) {
-            addSite(site, topSitesUL);
-        }
-    });
+    // const topSitesUL = document.getElementById("top-sites");
+    // chrome.topSites.get((sites) => {
+    //     // grab all top sites, throw them in the top-sites UL
+    //     for (let site of sites) {
+    //         addSite(site, topSitesUL);
+    //     }
+    // });
 
     // grab all images from /img/backgrounds, choose a random one for the page background
     chrome.runtime.getPackageDirectoryEntry((root) => {
@@ -154,17 +198,4 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
     });
-
-    // force the clock and date to update immediately
-    updateDateAndTime();
-
-    // start updating clock and date every second
-    setInterval(updateDateAndTime, 1000);
-});
-
-// folder-header click event (to toggle the folder)
-document.addEventListener("click", (e) => {
-    if (e.target && e.target.className == "folder-header") {
-        toggle(e.target.parentElement);
-    }
 });

@@ -4,21 +4,57 @@
     <meta charset="utf-8">
     <title>New Tab</title>
     <link rel="stylesheet" href="css/style.css">
-    <script src="js/content.js"></script>
 </head>
 <body>
-    <div id="background"></div>
-    <div id="bookmarks-bar" class="box">
-        <ul id="bookmarks"></ul>
-    </div>
-    <div id="center-widget" class="box">
-        <div id="clock">0</div>
-        <div id="date">0</div>
-        <div id="top-sites-bar">
-            <ul id="top-sites">
-                <li>Top Sites</li>
+    <div id="main">
+        <div id="background"></div>
+        <div id="bookmarks-bar" class="box">
+            <ul id="bookmarks">
+                <tree-node :node="rootNode"></tree-node>
             </ul>
         </div>
+        <div id="center-widget" class="box">
+            <div id="clock">{{ timeString }}</div>
+            <div id="date">{{ dateString }}</div>
+            <div id="top-sites-bar">
+                <ul id="top-sites">
+                    <li>Top Sites</li>
+                    <li v-for="site in topSites">
+                        <icon-text iconUrl="site.iconUrl" text="site.title"></icon-text>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
+    
+    <script type="text/x-template" id="icon-text-template">
+        <span>
+            <img class="icon" :src="iconUrl" />
+            {{ text }}
+        </span>
+    </script>
+    
+    <script type="text/x-template" id="tree-node-template">
+        <li :class="{folder: node.isFolder, bookmark: !node.isFolder, collapsed: !node.isOpen, expanded: node.isOpen}"
+            @click="toggle">
+            <a v-if="!node.isFolder">
+                <icon-text iconUrl="node.iconUrl" text="node.title"></icon-text>
+            </a>
+            <span v-if="node.isFolder">
+                <icon-text iconUrl="node.iconUrl" text="node.title"></icon-text>
+            </span>
+            <ul v-if="node.isOpen">
+                <tree-node
+                    v-for="(child, index) in node.children"
+                    :key="index"
+                    :node="child">
+                </tree-node>
+            </ul>
+        </li>
+    </script>
+    
+    <script src="lib/vue.js"></script>
+    <!--<script src="lib/vue.min.js"></script>-->
+    <script src="js/content.js" type="module"></script>
 </body>
 </html>
