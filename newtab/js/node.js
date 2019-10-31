@@ -14,8 +14,12 @@ export default class Node {
 
         this.title = chromeSite.title;
         this.url = chromeSite.url;
-        this.children = chromeSite.children;
+        this.name = chromeSite.id;
         this.isOpen = false;
+        
+        if (chromeSite.children) {
+            this.children = chromeSite.children.map(child => new Node(child));
+        }
     }
 
     /**

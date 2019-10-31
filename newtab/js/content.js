@@ -137,8 +137,7 @@ const vm = new Vue({
         // grab all chrome bookmarks
         chrome.bookmarks.getTree(bookmark => {
             // we want to skip the parent element (it's just an item called "Bookmarks bar")
-            this.rootNode = bookmark[0].children[0].children
-                .map(child => new Node(child)); // wrap each bookmark in a Node
+            this.rootNode = new Node(bookmark[0].children[0]);
         });
         
         // grab all chrome top sites
