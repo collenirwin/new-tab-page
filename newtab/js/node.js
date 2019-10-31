@@ -26,7 +26,7 @@ export default class Node {
      * Determines if this Node is a folder based on whether or not it has a url
      */
     get isFolder() {
-        return !!this.url;
+        return !this.url;
     }
 
     /**
