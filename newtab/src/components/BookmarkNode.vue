@@ -2,14 +2,14 @@
     <li :class="{
             folder: node.isFolder,
             bookmark: !node.isFolder,
-            collapsed: !node.isOpen,
+            collapsed: node.isFolder && !node.isOpen,
             expanded: node.isOpen
         }"
         @click="toggle">
         <a v-if="!node.isFolder">
             <IconText :iconUrl="node.iconUrl" :text="node.title" />
         </a>
-        <span v-else>
+        <span class="folder-header" v-else>
             <IconText :iconUrl="node.iconUrl" :text="node.title" />
         </span>
         <ul v-if="node.isOpen">

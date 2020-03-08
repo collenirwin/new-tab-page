@@ -22,6 +22,7 @@ a {
     padding-right: 8px;
     transition: all 0.25s ease;
     width: auto;
+    cursor: pointer;
 }
 
 a:visited {
