@@ -12,8 +12,10 @@ import Node from '../Node';
 
 export default {
     name: 'BookmarkBar',
-    data: {
-        rootNode: null
+    data() {
+        return {
+            rootNode: null
+        };
     },
     components: {
         //BookmarkNode
