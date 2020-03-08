@@ -1,8 +1,11 @@
 <template>
     <div id="bookmarks-bar" class="box">
         <ul id="bookmarks">
-            <template v-if="rootNode">
-                <BookmarkNode :node="rootNode" />
+            <template v-if="bookmarks">
+                <BookmarkNode
+                    v-for="(bookmark, index) in bookmarks"
+                    :key="index"
+                    :node="bookmark" />
             </template>
         </ul>
     </div>
@@ -16,16 +19,29 @@ export default {
     name: 'BookmarkBar',
     data() {
         return {
-            rootNode: null
+            bookmarks: null
         };
     },
     components: {
         BookmarkNode
     },
-    beforeMount() {
+    mounted() {
         chrome.bookmarks.getTree(bookmark => {
-            // we want to skip the parent element (it's just an item called "Bookmarks bar")
-            this.rootNode = new Node(bookmark[0].children[0]);
+            this.bookmarks = new Node(bookmark[0].children[0])
+                .children
+                .sort((a, b) => {
+                    // bookmarks first, then folders
+                    // but we preserve the order that they are stored in
+                    if (a.isFolder && !b.isFolder) {
+                        return 1;
+                    }
+                    
+                    if (!a.isFolder && b.isFolder) {
+                        return -1;
+                    }
+                    
+                    return 0;
+                });
         });
     }
 }
