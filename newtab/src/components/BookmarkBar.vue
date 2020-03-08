@@ -1,9 +1,18 @@
 <template>
     <div id="bookmarks-bar" class="box">
-        <ul id="bookmarks">
+        <input type="text" v-model="searchQuery" placeholder="Filter" />
+        <ul id="bookmarks" v-if="!searchQuery">
             <template v-if="bookmarks">
                 <BookmarkNode
                     v-for="(bookmark, index) in bookmarks"
+                    :key="index"
+                    :node="bookmark" />
+            </template>
+        </ul>
+        <ul v-else>
+            <template v-if="bookmarks">
+                <BookmarkNode
+                    v-for="(bookmark, index) in filteredBookmarks"
                     :key="index"
                     :node="bookmark" />
             </template>
@@ -19,11 +28,37 @@ export default {
     name: 'BookmarkBar',
     data() {
         return {
-            bookmarks: null
+            bookmarks: null,
+            searchQuery: ''
         };
     },
     components: {
         BookmarkNode
+    },
+    computed: {
+        flatBookmarks() {
+            const flatten = (list, folder) => {
+                if (!folder.children) {
+                    return list;
+                }
+                
+                return list.concat(folder.children.flatMap(child => child.isFolder ? flatten([], child) : child));
+            }
+            
+            const rootNode = new Node();
+            rootNode.children = this.bookmarks;
+
+            return flatten([], rootNode);
+        },
+        filteredBookmarks() {
+            if (!this.flatBookmarks) {
+                return this.flatBookmarks;
+            }
+            
+            return this.flatBookmarks
+                .filter(bookmark => bookmark.title && bookmark.url &&
+                    (bookmark.title.includes(this.searchQuery) || bookmark.url.includes(this.searchQuery)));
+        }
     },
     mounted() {
         chrome.bookmarks.getTree(bookmark => {

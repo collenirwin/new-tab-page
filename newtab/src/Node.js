@@ -8,17 +8,15 @@ export default class Node {
      * @param {*} chromeSite 
      */
     constructor(chromeSite) {
-        if (!chromeSite) {
-            throw new Error('Required argument "chromeSite" is null or undefined.');
-        }
+        if (chromeSite) {
+            this.title = chromeSite.title;
+            this.url = chromeSite.url;
+            this.name = chromeSite.id;
+            this.isOpen = false;
 
-        this.title = chromeSite.title;
-        this.url = chromeSite.url;
-        this.name = chromeSite.id;
-        this.isOpen = false;
-        
-        if (chromeSite.children) {
-            this.children = chromeSite.children.map(child => new Node(child));
+            if (chromeSite.children) {
+                this.children = chromeSite.children.map(child => new Node(child));
+            }
         }
     }
 
