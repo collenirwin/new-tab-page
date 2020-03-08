@@ -32,7 +32,6 @@ a:visited {
 a:hover, a:active {
     color: #1a1a1a !important;
     background-color: #8DDCEC;
-    font-weight: 500;
 }
 
 /* end global/tags */
