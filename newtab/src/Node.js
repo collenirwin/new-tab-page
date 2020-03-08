@@ -9,7 +9,7 @@ export default class Node {
      */
     constructor(chromeSite) {
         if (!chromeSite) {
-            throw new Error('Required argument "chromeSite" is null or undefined');
+            throw new Error('Required argument "chromeSite" is null or undefined.');
         }
 
         this.title = chromeSite.title;
@@ -33,7 +33,7 @@ export default class Node {
      * Gets the favicon url for this Node if it is not a folder, otherwise returns the folder icon url
      */
     get iconUrl() {
-        return this.isFolder ? '../img/folder.png' : `chrome://favicon/${this.node.url}`;
+        return this.isFolder ? '../img/folder.png' : `chrome://favicon/${this.url}`;
     }
 
     /**

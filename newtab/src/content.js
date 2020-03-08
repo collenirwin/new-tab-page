@@ -1,4 +1,4 @@
-import Node from './node.js';
+import Node from './Node';
 
 const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const months = ["January", "February", "March", "April", "May", "June", "July",
