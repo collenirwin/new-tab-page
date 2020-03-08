@@ -33,7 +33,7 @@ export default class Node {
      * Gets the favicon url for this Node if it is not a folder, otherwise returns the folder icon url
      */
     get iconUrl() {
-        return this.isFolder ? '../img/folder.png' : `chrome://favicon/${this.url}`;
+        return this.isFolder ? './img/folder.png' : `chrome://favicon/${this.url}`;
     }
 
     /**

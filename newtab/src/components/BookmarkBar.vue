@@ -1,13 +1,15 @@
 <template>
     <div id="bookmarks-bar" class="box">
         <ul id="bookmarks">
-            <!--<BookmarkNode node="rootNode" />-->
+            <template v-if="rootNode">
+                <BookmarkNode :node="rootNode" />
+            </template>
         </ul>
     </div>
 </template>
 
 <script>
-//import BookmarkNode from './BookmarkNode.vue'
+import BookmarkNode from './BookmarkNode.vue'
 import Node from '../Node';
 
 export default {
@@ -18,7 +20,7 @@ export default {
         };
     },
     components: {
-        //BookmarkNode
+        BookmarkNode
     },
     beforeMount() {
         chrome.bookmarks.getTree(bookmark => {
