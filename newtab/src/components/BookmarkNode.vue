@@ -4,12 +4,11 @@
             bookmark: !node.isFolder,
             collapsed: node.isFolder && !node.isOpen,
             expanded: node.isOpen
-        }"
-        @click="toggle">
-        <a v-if="!node.isFolder">
+        }">
+        <a v-if="!node.isFolder" :href="node.url">
             <IconText :iconUrl="node.iconUrl" :text="node.title" />
         </a>
-        <span class="folder-header" v-else>
+        <span v-else class="folder-header" @click="toggle">
             <IconText :iconUrl="node.iconUrl" :text="node.title" />
         </span>
         <ul v-if="node.isOpen">
