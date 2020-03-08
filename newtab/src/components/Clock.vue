@@ -1,5 +1,5 @@
 <template>
-    <div id="center-widget" class="box">
+    <div>
         <div id="clock">{{ timeString }}</div>
         <div id="date">{{ dateString }}</div>
     </div>
