@@ -1,6 +1,6 @@
 <template>
     <div id="bookmarks-bar" class="box">
-        <input type="text" v-model="searchQuery" placeholder="Filter" />
+        <input type="text" v-model="searchQuery" placeholder="Filter" id="search-input" />
         <ul id="bookmarks" v-if="!searchQuery">
             <template v-if="bookmarks">
                 <BookmarkNode
@@ -42,7 +42,9 @@ export default {
                     return list;
                 }
                 
-                return list.concat(folder.children.flatMap(child => child.isFolder ? flatten([], child) : child));
+                return list
+                    .concat(folder.children
+                        .flatMap(child => child.isFolder ? flatten([], child) : child));
             }
             
             const rootNode = new Node();

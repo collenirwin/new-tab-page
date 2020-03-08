@@ -121,6 +121,24 @@ a:hover, a:active {
     padding-bottom: 2px;
 }
 
+#search-input {
+    background: transparent;
+    width: 100%;
+    border: 0;
+    border-bottom: 1px solid;
+    border-color: #333;
+    transition: all 0.25s ease;
+    margin-left: 20px;
+    outline: none;
+    color: #fff;
+}
+
+#search-input:focus {
+    border-width: 2px;
+    border-color: #e2e2e2;
+    padding-bottom: 2px;
+}
+
 /* end IDs */
 
 /* classes */
