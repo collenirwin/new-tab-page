@@ -6,9 +6,9 @@
 </template>
 
 <script>
-const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const months = ["January", "February", "March", "April", "May", "June", "July",
-    "August", "September", "October", "November", "December"];
+const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+    'August', 'September', 'October', 'November', 'December'];
 
 export default {
     name: 'Clock',
@@ -43,12 +43,12 @@ export default {
         updateTime(date) {
             let hour = date.getHours();
             let minute = date.getMinutes();
-            let amOrPm = "AM";
+            let amOrPm = 'AM';
 
             // we want 12 hour time
             if (hour >= 12) {
                 hour -= 12;
-                amOrPm = "PM";
+                amOrPm = 'PM';
             }
 
             // again, 12 hour time
@@ -58,7 +58,7 @@ export default {
 
             // make sure we always show two digits for minute
             if (minute < 10) {
-                minute = "0" + minute.toString();
+                minute = '0' + minute.toString();
             }
             
             this.timeString = `${hour}:${minute} ${amOrPm}`;
