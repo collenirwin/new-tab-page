@@ -1,5 +1,3 @@
-import { htmlEncode } from './utils';
-
 /**
  * Represents a website link or folder of website links
  */
@@ -14,7 +12,7 @@ export default class Node {
             throw new Error('Required argument "chromeSite" is null or undefined.');
         }
 
-        this.title = htmlEncode(chromeSite.title);
+        this.title = chromeSite.title;
         this.url = chromeSite.url;
         this.name = chromeSite.id;
         this.isOpen = false;
