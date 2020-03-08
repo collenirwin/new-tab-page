@@ -57,9 +57,11 @@ export default {
                 return this.flatBookmarks;
             }
             
+            const query = this.searchQuery.toLowerCase();
+            
             return this.flatBookmarks
                 .filter(bookmark => bookmark.title && bookmark.url &&
-                    (bookmark.title.includes(this.searchQuery) || bookmark.url.includes(this.searchQuery)));
+                    (bookmark.title.toLowerCase().includes(query) || bookmark.url.includes(query)));
         }
     },
     mounted() {
