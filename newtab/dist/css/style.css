@@ -198,3 +198,7 @@ a:hover, a:active {
 ::selection {
     background-color: #8DDCEC;
 }
+
+[v-cloak] {
+    display: none;
+}

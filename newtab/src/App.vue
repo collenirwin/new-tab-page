@@ -1,5 +1,5 @@
 <template>
-    <div id="app">
+    <div id="app" v-cloak>
         <BackgroundImage />
         <BookmarkBar />
         <div id="center-widget" class="box">
