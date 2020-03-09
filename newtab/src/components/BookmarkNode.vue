@@ -13,7 +13,7 @@
         </span>
         <ul v-if="node.isOpen">
             <BookmarkNode
-                v-for="(child, index) in node.children"
+                v-for="(child, index) in node.sortChildren(true)"
                 :key="index"
                 :node="child" />
         </ul>

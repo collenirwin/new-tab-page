@@ -66,21 +66,7 @@ export default {
     },
     mounted() {
         chrome.bookmarks.getTree(bookmark => {
-            this.bookmarks = new Node(bookmark[0].children[0])
-                .children
-                .sort((a, b) => {
-                    // bookmarks first, then folders
-                    // but we preserve the order that they are stored in
-                    if (a.isFolder && !b.isFolder) {
-                        return 1;
-                    }
-                    
-                    if (!a.isFolder && b.isFolder) {
-                        return -1;
-                    }
-                    
-                    return 0;
-                });
+            this.bookmarks = new Node(bookmark[0].children[0]).sortChildren(false);
         });
     }
 }

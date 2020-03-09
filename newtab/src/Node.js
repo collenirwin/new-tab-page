@@ -40,4 +40,28 @@ export default class Node {
     toggle() {
         this.isOpen = !this.isOpen;
     }
+    
+    /**
+     * Sorts this.children, separating the folders from the bookmarks
+     * (preserves order beyond that)
+     * (returns this.children)
+     * @param {Boolean} foldersFirst
+     */
+    sortChildren(foldersFirst) {
+        if (this.children) {
+            this.children.sort((a, b) => {
+                if (a.isFolder && !b.isFolder) {
+                    return foldersFirst ? -1 : 1;
+                }
+
+                if (!a.isFolder && b.isFolder) {
+                    return foldersFirst ? 1 : -1;
+                }
+
+                return 0;
+            });
+        }
+        
+        return this.children;
+    }
 }
