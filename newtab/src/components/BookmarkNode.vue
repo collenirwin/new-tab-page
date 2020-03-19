@@ -13,7 +13,7 @@
         </span>
         <ul v-if="node.isOpen">
             <BookmarkNode
-                v-for="(child, index) in node.sortChildren(true)"
+                v-for="(child, index) in node.children"
                 :key="index"
                 :node="child" />
         </ul>
@@ -36,6 +36,9 @@ export default {
         toggle() {
             this.node.toggle();
         }
+    },
+    created() {
+        this.node.sortChildren(true);
     }
 }
 </script>
